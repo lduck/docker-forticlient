@@ -58,7 +58,10 @@ function run() {
   for iface in $(ip a | grep eth | grep inet | awk '{print $2}'); do
     iptables -t nat -A POSTROUTING -s "$iface" -j MASQUERADE
   done
-
+  
+  counter=0
+  last_run_hour=$(date +%H)
+  
   while [ true ]; do
     echo "------------ Retrie loop Starts ------------"
     # Get the current day (1-5 for Monday-Friday)
