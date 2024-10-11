@@ -39,6 +39,12 @@ proc execute_command {cert} {
       execute_command $cert_option
     }
 
+    "INFO:   Connected to gateway." {
+      send_user -- "INFO:   Connected to gateway.\n"
+      send_user -- "DEBUG:  If 2F is configured, then token authentication should be next.\n"
+      exp_continue
+    }
+
     "Two-factor authentication token:" {
       send_user -- "Two-factor authentication token:"
 
