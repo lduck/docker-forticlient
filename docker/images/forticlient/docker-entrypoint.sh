@@ -60,9 +60,41 @@ function run() {
   done
 
   while [ true ]; do
-    echo "------------ VPN Starts ------------"
-    /usr/local/bin/forticlient
-    echo "------------ VPN exited ------------"
+    echo "------------ Retrie loop Starts ------------"
+    # Get the current day (1-5 for Monday-Friday)
+    day_of_week=$(date +%u)
+
+    # Get the current time in hours and minutes (HHMM)
+    current_time=$(date +%H%M)
+    current_hour=$(date +%H)
+
+    # Check if it's outside business hours (exit the loop)
+    if [ "$day_of_week" -lt 1 ] || [ "$day_of_week" -gt 5 ] || [ "$current_time" -lt 0810 ] || [ "$current_time" -gt 1730 ]; then
+        echo "Outside business hours, exiting the loop..."
+        exit 0
+    fi
+
+    # Reset counter if a new hour has started
+    if [ "$current_hour" -ne "$last_run_hour" ]; then
+        counter=0
+        last_run_hour=$current_hour
+    fi
+
+    # Check if the loop has run less than 4 times this hour
+    if [ "$counter" -lt 4 ]; then
+        # Increment the counter and run your task
+        ((counter++))
+        echo "Running task $counter time(s) this hour at $(date)"
+
+        # Your command or task goes here
+        echo "------------ VPN Starts ------------"
+        /usr/local/bin/forticlient
+        echo "------------ VPN exited ------------"
+
+    else
+        echo "Task has run 4 times this hour. Exiting the loop..."
+        exit 0
+    fi
     sleep 10
   done
 }
